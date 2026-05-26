@@ -386,6 +386,13 @@ async function submitReserva(e) {
   btn.querySelector('.btn__text').textContent = 'Enviando…';
   startLoading();
 
+// Enviar la URL del propio sitio para que el backend construya el link
+  // de consulta sin depender de RESERVAS_URL_PUBLICA del config. Si el
+  // sitio se mueve de dominio, el link siempre apunta al actual.
+  // Quitamos index.html del final si el navegador lo añadió.
+  const urlBaseSitio = window.location.origin +
+    window.location.pathname.replace(/index\.html$/, '');
+
   try {
     const r = await apiPost('crearReserva', {
       clienteNombre:   nombre,
@@ -394,7 +401,8 @@ async function submitReserva(e) {
       horaReserva:     hora,
       personas:        personas,
       tipoEvento:      tipo,
-      observaciones:   obs
+      observaciones:   obs,
+      urlBaseSitio:    urlBaseSitio
     });
     stopLoading();
     btn.disabled = false;
