@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#06402B" />
+  <meta name="description" content="Reservas online — Restaurante y Pescadería Ramírez" />
+
+  <title>Reservas · Restaurante y Pescadería Ramírez</title>
+
+  <link rel="icon" type="image/webp" href="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp" />
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       LOADER GLOBAL
+       ============================================================ -->
+  <div id="loader" class="loader hidden" aria-hidden="true">
+    <div class="spinner">
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       VISTA: FORMULARIO DE RESERVA (default sin token)
+       ============================================================ -->
+  <main id="view-form" class="view" hidden>
+    <header class="hero">
+      <img class="hero__logo"
+           src="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp"
+           alt="Reservas" />
+      <h1 class="hero__title">Reserva tu mesa</h1>
+      <p class="hero__sub" id="hero-restaurante">Restaurante y Pescadería Ramírez</p>
+    </header>
+
+    <section class="wrap">
+      <form id="form-reserva" class="card" novalidate>
+        <!-- Nombre -->
+        <div class="field">
+          <label for="f-nombre">Nombre completo <span class="req">*</span></label>
+          <input type="text" id="f-nombre" name="nombre" autocomplete="name"
+                 maxlength="80" placeholder="Tu nombre" required />
+          <span class="hint" id="hint-nombre"></span>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="field">
+          <label for="f-telefono">WhatsApp <span class="req">*</span></label>
+          <div class="field__row">
+            <span class="field__prefix">🇨🇴 +57</span>
+            <input type="tel" id="f-telefono" name="telefono" inputmode="numeric"
+                   maxlength="10" placeholder="3001234567" autocomplete="tel-national" required />
+          </div>
+          <span class="hint" id="hint-telefono">10 dígitos, debe iniciar en 3</span>
+        </div>
+
+        <!-- Fecha + Hora -->
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-fecha">Fecha <span class="req">*</span></label>
+            <input type="date" id="f-fecha" name="fecha" required />
+          </div>
+          <div class="field">
+            <label for="f-hora">Hora <span class="req">*</span></label>
+            <select id="f-hora" name="hora" required>
+              <option value="">Selecciona…</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Personas -->
+        <div class="field">
+          <label>Número de personas <span class="req">*</span></label>
+          <div class="counter">
+            <button type="button" class="counter__btn" id="btn-personas-menos" aria-label="Menos">−</button>
+            <input type="number" id="f-personas" name="personas" min="1" max="50" value="2" inputmode="numeric" required />
+            <button type="button" class="counter__btn" id="btn-personas-mas" aria-label="Más">+</button>
+          </div>
+        </div>
+
+        <!-- Tipo de evento -->
+        <div class="field">
+          <label for="f-tipo">Tipo de ocasión <span class="opt">(opcional)</span></label>
+          <select id="f-tipo" name="tipoEvento">
+            <option value="">Selecciona una opción…</option>
+            <option value="Almuerzo familiar">Almuerzo familiar</option>
+            <option value="Cena romántica">Cena romántica</option>
+            <option value="Cumpleaños">Cumpleaños</option>
+            <option value="Reunión empresarial">Reunión empresarial</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="field">
+          <label for="f-obs">Observaciones <span class="opt">(opcional)</span></label>
+          <textarea id="f-obs" name="observaciones" rows="3" maxlength="500"
+                    placeholder="Alergias, preferencias de mesa, ocasión especial…"></textarea>
+          <span class="hint hint--counter"><span id="obs-count">0</span> / 500</span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary btn-block" id="btn-enviar">
+          <span class="btn__text">Solicitar reserva</span>
+          <span class="btn__icon">→</span>
+        </button>
+
+        <p class="legal">
+          Al enviar aceptas que te contactemos por WhatsApp para confirmar.
+          Tu solicitud será revisada en el menor tiempo posible.
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       VISTA: CONFIRMACIÓN POST-ENVÍO
+       ============================================================ -->
+  <main id="view-success" class="view" hidden>
+    <header class="hero">
+      <img class="hero__logo"
+           src="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp"
+           alt="Reservas" />
+    </header>
+
+    <section class="wrap">
+      <div class="card card--success">
+        <div class="success-icon">✓</div>
+        <h2>¡Solicitud enviada!</h2>
+        <p class="success-sub">
+          Te enviamos un mensaje por WhatsApp con el resumen.
+          Pronto confirmaremos tu reserva.
+        </p>
+
+        <div class="success-resumen" id="success-resumen"></div>
+
+        <p class="success-tip">
+          Guarda este enlace para consultar o cancelar tu reserva más tarde:
+        </p>
+        <div class="success-link">
+          <a id="success-url" href="#" target="_blank" rel="noopener"></a>
+          <button type="button" id="btn-copiar" class="btn-icon" aria-label="Copiar">📋</button>
+        </div>
+
+        <button type="button" id="btn-otra" class="btn btn-ghost btn-block">
+          Hacer otra reserva
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       VISTA: CONSULTA / CANCELACIÓN POR TOKEN
+       ============================================================ -->
+  <main id="view-consulta" class="view" hidden>
+    <header class="hero">
+      <img class="hero__logo"
+           src="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp"
+           alt="Reservas" />
+      <h1 class="hero__title">Tu reserva</h1>
+    </header>
+
+    <section class="wrap" id="consulta-wrap">
+      <!-- Se inyecta dinámicamente -->
+    </section>
+  </main>
+
+  <!-- ============================================================
+       VISTA: ERROR / TOKEN INVÁLIDO
+       ============================================================ -->
+  <main id="view-error" class="view" hidden>
+    <header class="hero">
+      <img class="hero__logo"
+           src="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp"
+           alt="Reservas" />
+    </header>
+    <section class="wrap">
+      <div class="card card--error">
+        <div class="error-icon">⚠</div>
+        <h2 id="error-title">No se encontró la reserva</h2>
+        <p id="error-msg">El enlace que usaste no es válido o la reserva ya no existe.</p>
+        <a href="./" class="btn btn-ghost btn-block">Hacer una nueva reserva</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER (mandatorio)
+       ============================================================ -->
+  <footer class="footer">
+    <p>
+      <strong>Oscar Polania</strong> · Experto en soluciones automáticas ·
+      Cel: <a href="tel:+573103230712">3103230712</a>
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
