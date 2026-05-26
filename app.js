@@ -411,6 +411,16 @@ async function submitReserva(e) {
 function mostrarExito(r, datos) {
   showView('success');
 
+  // Persistir el token en la URL del navegador. Si el cliente refresca o
+  // comparte la URL desde el address bar, no pierde su reserva: la próxima
+  // carga detecta el token y abre directamente la vista de consulta. El
+  // link enviado por WhatsApp ya lleva el token vía {consultaUrl}; esto
+  // cubre el caso de quien envía desde el navegador, no desde WA.
+  if (r.tokenPublico && window.history && window.history.replaceState) {
+    const newUrl = window.location.pathname + '?token=' + encodeURIComponent(r.tokenPublico);
+    try { window.history.replaceState({}, '', newUrl); } catch (_) {}
+  }
+
   // Resumen
   const tipoFinal = datos.tipo || 'Sin especificar';
   const resumen = $('#success-resumen');
@@ -454,6 +464,11 @@ function mostrarExito(r, datos) {
 
   // Botón "otra reserva"
   $('#btn-otra').onclick = () => {
+    // Limpiar token de la URL — si no, al refrescar volvería a la vista
+    // de consulta de la reserva anterior en lugar del formulario en blanco
+    if (window.history && window.history.replaceState) {
+      try { window.history.replaceState({}, '', window.location.pathname); } catch (_) {}
+    }
     // Resetear formulario y volver
     $('#form-reserva').reset();
     $('#obs-count').textContent = '0';
