@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#06402B" />
   <meta name="description" content="Reservas online — Restaurante y Pescadería Ramírez" />
 
-  <title>Reservas · Restaurante y Pescadería Ramírez</title>
+  <title>Restaurante Ramírez</title>
 
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqqeavica/image/upload/v1778181656/Restaurante_vrwguv.png" />
   <link rel="apple-touch-icon" href="https://res.cloudinary.com/dqqeavica/image/upload/v1778181656/Restaurante_vrwguv.png" />
@@ -28,6 +28,64 @@
       <i></i><i></i><i></i><i></i><i></i><i></i>
     </div>
   </div>
+
+  <!-- ============================================================
+       VISTA: HUB (default sin token) — selector Reservas / Domicilios
+       ============================================================ -->
+  <main id="view-hub" class="view" hidden>
+    <header class="hero hero--hub">
+      <img class="hero__logo"
+           src="https://res.cloudinary.com/dqqeavica/image/upload/v1778181656/Restaurante_vrwguv.png"
+           alt="Restaurante Ramírez" />
+      <h1 class="hero__title">Restaurante y Pescadería Ramírez</h1>
+      <p class="hero__sub">¿Qué te gustaría hacer hoy?</p>
+    </header>
+
+    <section class="wrap wrap--hub">
+      <div class="hub-grid">
+        <!-- Tile: Reservas (operativo) -->
+        <button type="button" class="hub-tile" data-hub="reservas">
+          <div class="hub-tile__media">
+            <img src="https://res.cloudinary.com/dqqeavica/image/upload/v1779830189/reserva_pto4kr.webp"
+                 alt="Reservas" loading="lazy" />
+          </div>
+          <div class="hub-tile__body">
+            <h2 class="hub-tile__title">Reservar mesa</h2>
+            <p class="hub-tile__desc">Aparta tu lugar para almuerzos, cenas y eventos especiales.</p>
+            <span class="hub-tile__cta">
+              Empezar
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </span>
+          </div>
+        </button>
+
+        <!-- Tile: Domicilios (próximamente) -->
+        <button type="button" class="hub-tile hub-tile--soon" data-hub="domicilios">
+          <span class="hub-tile__badge">Muy pronto</span>
+          <div class="hub-tile__media">
+            <img src="https://res.cloudinary.com/dqqeavica/image/upload/v1779842537/domicilio_yek4xc.webp"
+                 alt="Domicilios" loading="lazy" />
+          </div>
+          <div class="hub-tile__body">
+            <h2 class="hub-tile__title">Pedir a domicilio</h2>
+            <p class="hub-tile__desc">Tus platos favoritos llevados hasta tu puerta. Estamos preparando algo especial.</p>
+            <span class="hub-tile__cta">
+              Avísame cuando esté
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/>
+                <polyline points="22 7 12 14 2 7"/>
+              </svg>
+            </span>
+          </div>
+        </button>
+      </div>
+    </section>
+  </main>
 
   <!-- ============================================================
        VISTA: FORMULARIO DE RESERVA (default sin token)
