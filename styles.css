@@ -916,6 +916,215 @@ select {
 }
 
 /* ============================================================
+   VISTA HUB — Selector Reservas / Domicilios
+   ============================================================ */
+.hero--hub {
+  padding: 36px 20px 14px;
+}
+
+.wrap--hub {
+  max-width: 880px;
+  padding: 8px 20px 36px;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 720px) {
+  .hub-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+}
+
+.hub-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 28px 24px 26px;
+  box-shadow: var(--sh-md);
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.32, 1.2, 0.56, 1),
+              box-shadow 0.22s,
+              border-color 0.22s;
+  animation: tileIn 0.55s cubic-bezier(0.32, 1, 0.56, 1) both;
+  min-height: 280px;
+}
+
+.hub-tile:nth-child(1) { animation-delay: 0.05s; }
+.hub-tile:nth-child(2) { animation-delay: 0.18s; }
+
+@keyframes tileIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hub-tile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+}
+
+/* Halo decorativo de fondo (sutil) */
+.hub-tile::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hub-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sh-lg);
+  border-color: var(--accent);
+}
+
+.hub-tile:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.hub-tile__media {
+  position: relative;
+  z-index: 1;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff, var(--bg-soft));
+  border: 3px solid var(--bg-card);
+  box-shadow: var(--sh-sm), 0 0 0 4px var(--primary-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.32, 1.4, 0.56, 1);
+}
+
+.hub-tile:hover .hub-tile__media {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.hub-tile__media img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.hub-tile__body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hub-tile__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.4rem;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+}
+
+.hub-tile__desc {
+  font-size: 0.92rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin: 0 0 18px;
+  flex: 1;
+}
+
+.hub-tile__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--accent);
+  letter-spacing: 0.2px;
+  transition: gap 0.18s, color 0.18s;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.hub-tile:hover .hub-tile__cta {
+  gap: 14px;
+  color: var(--primary);
+}
+
+/* Variante "Muy pronto" — visible pero atenuada, con badge dorado */
+.hub-tile--soon {
+  opacity: 0.96;
+}
+
+.hub-tile--soon .hub-tile__media {
+  filter: saturate(0.78);
+  box-shadow: var(--sh-sm), 0 0 0 4px var(--accent-soft);
+}
+
+.hub-tile--soon:hover {
+  opacity: 1;
+  border-color: var(--accent-light);
+}
+
+.hub-tile--soon:hover .hub-tile__media {
+  filter: saturate(1);
+}
+
+.hub-tile--soon:hover .hub-tile__cta {
+  color: #b45309;
+}
+
+.hub-tile__badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  box-shadow: 0 3px 10px rgba(194, 121, 42, 0.40);
+  z-index: 3;
+  animation: badgeShine 2.6s ease-in-out infinite;
+}
+
+@keyframes badgeShine {
+  0%, 100% { box-shadow: 0 3px 10px rgba(194, 121, 42, 0.40); }
+  50%      { box-shadow: 0 4px 16px rgba(194, 121, 42, 0.65), 0 0 0 4px var(--accent-soft); }
+}
+
+/* Sin borde alrededor del emoji del modal de "Muy pronto" */
+.swal-no-border {
+  border: 0 !important;
+  font-size: 3.2rem !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* ============================================================
    ANIMACIONES DECORATIVAS
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
