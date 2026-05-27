@@ -38,7 +38,7 @@ function stopLoading() {
 }
 
 function showView(name) {
-  ['form', 'success', 'consulta', 'error'].forEach(v => {
+  ['hub', 'form', 'success', 'consulta', 'error'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) el.hidden = v !== name;
   });
@@ -200,9 +200,53 @@ window.addEventListener('DOMContentLoaded', () => {
   if (token) {
     abrirVistaConsulta(token);
   } else {
-    abrirVistaFormulario();
+    abrirVistaHub();
   }
 });
+
+/* ============================================================
+   VISTA: HUB — selector Reservas / Domicilios
+   ============================================================
+   Pantalla de entrada por defecto cuando no hay token.
+   Permite al cliente elegir entre el flujo actual de Reservas
+   (operativo) o Domicilios (próximamente — placeholder visual
+   con modal informativo al tocar).
+   ============================================================ */
+function abrirVistaHub() {
+  showView('hub');
+  inicializarHub();
+}
+
+/* Idempotente — se llama también al volver desde "Hacer otra reserva"
+   en la vista de éxito. Los listeners se bindean una sola vez con
+   el flag _bound por elemento. */
+function inicializarHub() {
+  document.querySelectorAll('[data-hub]').forEach(btn => {
+    if (btn._bound) return;
+    btn._bound = true;
+    btn.addEventListener('click', () => {
+      const op = btn.dataset.hub;
+      if (op === 'reservas') {
+        abrirVistaFormulario();
+      } else if (op === 'domicilios') {
+        Swal.fire({
+          iconHtml: '🛵',
+          title: '¡Muy pronto!',
+          html:
+            '<p style="margin:0 0 10px;">Estamos preparando el servicio de domicilios con la misma calidad que disfrutas en el restaurante.</p>' +
+            '<p style="margin:0; font-size:0.86rem; color:var(--text-muted);">Mientras tanto, puedes reservar tu mesa y visitarnos.</p>',
+          confirmButtonText: 'Reservar ahora',
+          showCancelButton: true,
+          cancelButtonText: 'Cerrar',
+          reverseButtons: true,
+          customClass: { icon: 'swal-no-border' }
+        }).then(r => {
+          if (r.isConfirmed) abrirVistaFormulario();
+        });
+      }
+    });
+  });
+}
 
 /* ============================================================
    VISTA: FORMULARIO
@@ -386,13 +430,6 @@ async function submitReserva(e) {
   btn.querySelector('.btn__text').textContent = 'Enviando…';
   startLoading();
 
-// Enviar la URL del propio sitio para que el backend construya el link
-  // de consulta sin depender de RESERVAS_URL_PUBLICA del config. Si el
-  // sitio se mueve de dominio, el link siempre apunta al actual.
-  // Quitamos index.html del final si el navegador lo añadió.
-  const urlBaseSitio = window.location.origin +
-    window.location.pathname.replace(/index\.html$/, '');
-
   try {
     const r = await apiPost('crearReserva', {
       clienteNombre:   nombre,
@@ -401,8 +438,7 @@ async function submitReserva(e) {
       horaReserva:     hora,
       personas:        personas,
       tipoEvento:      tipo,
-      observaciones:   obs,
-      urlBaseSitio:    urlBaseSitio
+      observaciones:   obs
     });
     stopLoading();
     btn.disabled = false;
@@ -470,17 +506,18 @@ function mostrarExito(r, datos) {
     }
   };
 
-  // Botón "otra reserva"
+  // Botón "otra reserva" — vuelve al hub para que el cliente pueda elegir
+  // entre reservar de nuevo o (próximamente) pedir a domicilio.
   $('#btn-otra').onclick = () => {
     // Limpiar token de la URL — si no, al refrescar volvería a la vista
-    // de consulta de la reserva anterior en lugar del formulario en blanco
+    // de consulta de la reserva anterior en lugar del hub limpio
     if (window.history && window.history.replaceState) {
       try { window.history.replaceState({}, '', window.location.pathname); } catch (_) {}
     }
-    // Resetear formulario y volver
+    // Resetear formulario por si vuelve a Reservas
     $('#form-reserva').reset();
     $('#obs-count').textContent = '0';
-    abrirVistaFormulario();
+    abrirVistaHub();
   };
 }
 
